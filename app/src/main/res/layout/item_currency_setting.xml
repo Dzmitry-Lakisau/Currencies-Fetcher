@@ -4,7 +4,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?android:windowBackground">
 
     <TextView
             android:id="@+id/txt_charCode"
@@ -25,12 +26,12 @@
             app:layout_constraintTop_toBottomOf="@+id/txt_charCode"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/txt_charCode"
-            app:layout_constraintEnd_toStartOf="@+id/txt_earlierDateRate"
+            app:layout_constraintEnd_toStartOf="@+id/switch_show"
             app:layout_constraintHorizontal_bias="0"
             android:ellipsize="end"
             android:textSize="12sp"
             android:textColor="@android:color/darker_gray"
-            tools:text="100000 иранских риалов"/>
+            tools:text="100000 иранских риалов" />
 
     <include layout="@layout/guideline_70"/>
 
