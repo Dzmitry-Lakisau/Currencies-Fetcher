@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.dzmitry_lakisau.currencies_fetcher.DATE_PATTERN_FOR_UI
 import by.dzmitry_lakisau.currencies_fetcher.R
 import by.dzmitry_lakisau.currencies_fetcher.repository.CurrencyMapper
 import by.dzmitry_lakisau.currencies_fetcher.repository.Repository
@@ -17,6 +18,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_currencies.*
 import org.koin.android.ext.android.inject
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CurrenciesActivity : AppCompatActivity() {
 
@@ -26,9 +29,9 @@ class CurrenciesActivity : AppCompatActivity() {
 
     private val currenciesAdapter = CurrenciesAdapter()
 
-    private val dates = arrayListOf("04/29/2019", "04/28/2019", "04/27/2019")
-
     private val currencyMapper = CurrencyMapper()
+
+    private val simpleDateFormatter = SimpleDateFormat(DATE_PATTERN_FOR_UI, Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +51,7 @@ class CurrenciesActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        load(repository, dates, currencyMapper)
+        loadCurrencyRates()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -61,17 +64,13 @@ class CurrenciesActivity : AppCompatActivity() {
         }
     }
 
-    private fun load(
-        repository: Repository,
-        dates: ArrayList<String>,
-        currencyMapper: CurrencyMapper
-    ) {
+    private fun loadCurrencyRates() {
         currenciesAdapter.removeAllHeadersAndFooters()
         currenciesAdapter.removeAll()
         currenciesAdapter.addHeader()
 
         CompositeDisposable().add(
-            repository.getExchangeRates(dates)
+            repository.getExchangeRates()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -86,11 +85,9 @@ class CurrenciesActivity : AppCompatActivity() {
                     },
                     {
                         val res = currencyMapper.getTwoDayRates()
-                        Log.e(this.toString(), res[0].latterDate.toString())
-                        Log.e(this.toString(), res[0].earlierDate.toString())
 
-                        txt_earlierDate.text = dates[1]
-                        txt_latterDate.text = dates[0]
+                        txt_earlierDate.text = simpleDateFormatter.format(res[0].earlierDate)
+                        txt_latterDate.text = simpleDateFormatter.format(res[0].latterDate)
                         frame_head.visibility = View.VISIBLE
                         currenciesAdapter.removeAllHeadersAndFooters()
                         currenciesAdapter.addAll(settings.applyTo(res))

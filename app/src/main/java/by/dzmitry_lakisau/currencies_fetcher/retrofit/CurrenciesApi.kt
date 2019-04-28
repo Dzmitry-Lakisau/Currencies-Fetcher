@@ -6,6 +6,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface CurrenciesApi {
-    @GET("XmlExRates.aspx")//TODO change to Date
+    @GET("XmlExRates.aspx")
     fun getExchangeRates(@Query("ondate") date: String? = null): Single<DailyExchangeRates>
 }

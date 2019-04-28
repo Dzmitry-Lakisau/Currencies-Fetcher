@@ -36,6 +36,7 @@ class CurrencyMapper {
             currencyTwoDayRateList.add(currencyTwoDayRate)
         }
 
+        dailyExchangeRatesList.clear()
         return currencyTwoDayRateList
     }
 }
