@@ -22,6 +22,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding {
+        enabled = true
+    }
 }
 
 ext {
@@ -58,6 +61,7 @@ dependencies {
 
     // Koin
     implementation "org.koin:koin-android:$koinVersion"
+    implementation "org.koin:koin-androidx-viewmodel:$koinVersion"
 
     //Retrofit
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"

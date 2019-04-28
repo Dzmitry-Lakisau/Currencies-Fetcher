@@ -1,42 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
-
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+                name="currenciesViewModel"
+                type="by.dzmitry_lakisau.currencies_fetcher.view.currencies.CurrenciesViewModel"/>
+    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/frame_head"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/header_white">
+            android:layout_height="match_parent">
 
-        <TextView
-                android:id="@+id/txt_earlierDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="25.04.19"
-                app:layout_constraintEnd_toEndOf="@id/guideline_70"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <include layout="@layout/guideline_70"/>
-
-        <TextView
-                android:id="@+id/txt_latterDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="@id/guideline_90"
-                tools:text="26.04.19"
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                android:background="@color/colorPrimary">
 
-        <include layout="@layout/guideline_90"/>
+            <ImageButton
+                    android:id="@+id/toolbar_back"
+                    style="@style/Widget.AppCompat.Light.ActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/description_settings"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/toolbar_title"
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/ic_back" />
+
+            <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/title_currencies"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@id/toolbar_back"
+                    app:layout_constraintEnd_toStartOf="@id/toolbar_settings"/>
+
+            <ImageButton
+                    android:id="@+id/toolbar_settings"
+                    style="@style/Widget.AppCompat.Light.ActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="@{currenciesViewModel.isError ? View.INVISIBLE : View.VISIBLE}"
+                    app:layout_constraintStart_toEndOf="@id/toolbar_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:srcCompat="@drawable/ic_settings" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toBottomOf="@id/toolbar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:visibility="@{currenciesViewModel.isSuccess ? View.VISIBLE : View.GONE}">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/list_head"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:background="@color/header_white">
+
+                <TextView
+                        android:id="@+id/txt_earlierDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{currenciesViewModel.earlierDate}"
+                        tools:text="25.04.19"
+                        app:layout_constraintEnd_toEndOf="@id/guideline_70"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <include layout="@layout/guideline_70"/>
+
+                <TextView
+                        android:id="@+id/txt_latterDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="@id/guideline_90"
+                        android:text="@{currenciesViewModel.latterDate}"
+                        tools:text="26.04.19"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <include layout="@layout/guideline_90"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_currencies"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintTop_toBottomOf="@id/list_head"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="@{currenciesViewModel.isSuccess ? View.VISIBLE : View.GONE}"
+                    tools:listitem="@layout/item_currency"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ProgressBar
+                style="@android:style/Widget.DeviceDefault.ProgressBar.Large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{currenciesViewModel.isLoading ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+
+        <TextView
+                android:id="@+id/item_error_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="@string/error_occurred"
+                android:visibility="@{!currenciesViewModel.isError ? View.GONE : View.VISIBLE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbar"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_currencies"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-</LinearLayout>
+</layout>

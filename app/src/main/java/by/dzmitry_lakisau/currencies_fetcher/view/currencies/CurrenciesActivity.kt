@@ -1,98 +1,52 @@
 package by.dzmitry_lakisau.currencies_fetcher.view.currencies
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil.setContentView
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import by.dzmitry_lakisau.currencies_fetcher.DATE_PATTERN_FOR_UI
 import by.dzmitry_lakisau.currencies_fetcher.R
-import by.dzmitry_lakisau.currencies_fetcher.repository.CurrencyMapper
-import by.dzmitry_lakisau.currencies_fetcher.repository.Repository
-import by.dzmitry_lakisau.currencies_fetcher.settings.Settings
+import by.dzmitry_lakisau.currencies_fetcher.databinding.ActivityCurrenciesBinding
+import by.dzmitry_lakisau.currencies_fetcher.model.CurrencyTwoDateRate
 import by.dzmitry_lakisau.currencies_fetcher.view.settings.SettingsActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_currencies.*
-import org.koin.android.ext.android.inject
-import java.text.SimpleDateFormat
-import java.util.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CurrenciesActivity : AppCompatActivity() {
 
-    private val repository: Repository by inject()
+    companion object{
+        private const val SETTINGS_CODE = 55
+    }
 
-    private val settings: Settings by inject()
+    private val currenciesViewModel: CurrenciesViewModel by viewModel()
+
+    private lateinit var binding: ActivityCurrenciesBinding
 
     private val currenciesAdapter = CurrenciesAdapter()
 
-    private val currencyMapper = CurrencyMapper()
-
-    private val simpleDateFormatter = SimpleDateFormat(DATE_PATTERN_FOR_UI, Locale.getDefault())
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_currencies)
+        binding = setContentView(this, R.layout.activity_currencies)
+        binding.currenciesViewModel = currenciesViewModel
+        binding.executePendingBindings()
 
-        rv_currencies.apply {
+        binding.rvCurrencies.apply {
             layoutManager = LinearLayoutManager(this@CurrenciesActivity)
             adapter = currenciesAdapter
         }
+
+        currenciesViewModel.currencies.observe(this, Observer<List<CurrencyTwoDateRate>> { currenciesAdapter.replaceAll(it) })
+
+        toolbar_settings.setOnClickListener { startActivityForResult(SettingsActivity.newIntent(this), SETTINGS_CODE) }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        loadCurrencyRates()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.action_settings -> {
-                startActivity(SettingsActivity.newIntent(this))
-                true
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == SETTINGS_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                currenciesViewModel.loadCurrencyRates()
             }
-            else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun loadCurrencyRates() {
-        currenciesAdapter.removeAllHeadersAndFooters()
-        currenciesAdapter.removeAll()
-        currenciesAdapter.addHeader()
-
-        CompositeDisposable().add(
-            repository.getExchangeRates()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                        currencyMapper.addDailyExchangeRatesList(it)
-                    },
-                    {
-                        currenciesAdapter.removeAllHeadersAndFooters()
-                        currenciesAdapter.addErrorHeader()
-                        frame_head.visibility = View.GONE
-                        Log.e(this.toString(), it.message)
-                    },
-                    {
-                        val res = currencyMapper.getTwoDayRates()
-
-                        txt_earlierDate.text = simpleDateFormatter.format(res[0].earlierDate)
-                        txt_latterDate.text = simpleDateFormatter.format(res[0].latterDate)
-                        frame_head.visibility = View.VISIBLE
-                        currenciesAdapter.removeAllHeadersAndFooters()
-                        currenciesAdapter.addAll(settings.applyTo(res))
-                    }
-                )
-        )
     }
 }

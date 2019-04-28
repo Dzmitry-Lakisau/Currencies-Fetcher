@@ -5,9 +5,11 @@ import by.dzmitry_lakisau.currencies_fetcher.BuildConfig
 import by.dzmitry_lakisau.currencies_fetcher.repository.Repository
 import by.dzmitry_lakisau.currencies_fetcher.retrofit.CurrenciesApi
 import by.dzmitry_lakisau.currencies_fetcher.settings.Settings
+import by.dzmitry_lakisau.currencies_fetcher.view.currencies.CurrenciesViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -15,7 +17,7 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
 val appModule = module {
 
-    single {
+    single<OkHttpClient> {
         val clientBuilder = OkHttpClient.Builder()
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -23,7 +25,7 @@ val appModule = module {
         clientBuilder.build()
     }
 
-    single {
+    single<CurrenciesApi> {
         Retrofit.Builder()
             .baseUrl(BuildConfig.API_BASE_URL)
             .client(get())
@@ -40,4 +42,6 @@ val appModule = module {
     single {
         Settings(PreferenceManager.getDefaultSharedPreferences(androidContext()))
     }
+
+    viewModel{ CurrenciesViewModel(get(), get()) }
 }
