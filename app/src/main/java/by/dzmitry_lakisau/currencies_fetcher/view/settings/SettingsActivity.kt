@@ -1,10 +1,9 @@
 package by.dzmitry_lakisau.currencies_fetcher.view.settings
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,11 +29,6 @@ class SettingsActivity : AppCompatActivity(), OnStartDragListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_back)
-        }
-
         rv_currencies_settings.apply {
             layoutManager = LinearLayoutManager(this@SettingsActivity)
             adapter = settingsAdapter
@@ -49,27 +43,18 @@ class SettingsActivity : AppCompatActivity(), OnStartDragListener {
         })
         itemTouchHelper.attachToRecyclerView(rv_currencies_settings)
 
-        settingsAdapter.addAll(settings.get())
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.settings, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.action_done -> {
-                settings.save(settingsAdapter.currencySettings)
-                onBackPressed()
-                true
-            }
-            android.R.id.home -> {
-                onBackPressed()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+        toolbar_back.setOnClickListener {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
         }
+
+        toolbar_done.setOnClickListener {
+            settings.save(settingsAdapter.currencySettings)
+            setResult(Activity.RESULT_OK)
+            finish()
+        }
+
+        settingsAdapter.addAll(settings.get())
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {

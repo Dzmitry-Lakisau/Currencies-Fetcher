@@ -1,8 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/colorPrimary">
+
+        <ImageButton
+                android:id="@+id/toolbar_back"
+                style="@style/Widget.AppCompat.Light.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/description_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/toolbar_title"
+                app:srcCompat="@drawable/ic_back" />
+
+        <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/title_settings"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:contentDescription="@string/description_done"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/toolbar_back"
+                app:layout_constraintEnd_toStartOf="@id/toolbar_done"/>
+
+        <ImageButton
+                android:id="@+id/toolbar_done"
+                style="@style/Widget.AppCompat.Light.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/description_done"
+                app:layout_constraintStart_toEndOf="@id/toolbar_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/ic_done" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_currencies_settings"
