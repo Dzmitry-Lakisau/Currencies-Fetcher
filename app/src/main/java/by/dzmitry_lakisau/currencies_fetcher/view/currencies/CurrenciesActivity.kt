@@ -26,29 +26,29 @@ class CurrenciesActivity : AppCompatActivity() {
 
     private val currenciesAdapter = CurrenciesAdapter()
 
+    private val dates = arrayListOf("04/29/2019", "04/28/2019", "04/27/2019")
+
+    private val currencyMapper = CurrencyMapper()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_currencies)
-
-        val dates = arrayListOf("04/26/2019", "04/25/2019", "04/24/2019")
-
-        val currencyMapper = CurrencyMapper()
-
-        load(repository, dates, currencyMapper)
-
-        frame_head.setOnClickListener { load(repository, dates, currencyMapper) }
 
         rv_currencies.apply {
             layoutManager = LinearLayoutManager(this@CurrenciesActivity)
             adapter = currenciesAdapter
         }
-
-//        settings.save()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        load(repository, dates, currencyMapper)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

@@ -38,12 +38,7 @@ class CurrenciesAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return when (viewType) {
             HEADER -> HeaderViewHolder(layoutInflater.inflate(R.layout.item_header, parent, false))
             ERROR_HEADER -> ErrorHeaderViewHolder(layoutInflater.inflate(R.layout.item_error_header, parent, false))
-            else -> CurrencyViewHolder(
-                layoutInflater.inflate(
-                    R.layout.item_currency,
-                    parent,
-                    false
-                )
+            else -> CurrencyViewHolder(layoutInflater.inflate(R.layout.item_currency, parent, false)
             )
         }
     }
@@ -63,6 +58,7 @@ class CurrenciesAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun addHeader() {
         isHeaderAdded = true
         currencies.add(null)
+        notifyItemInserted(0)
     }
 
     private fun removeHeader() {
@@ -77,6 +73,7 @@ class CurrenciesAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun addErrorHeader() {
         isErrorHeaderAdded = true
         currencies.add(null)
+        notifyItemInserted(0)
     }
 
     private fun removeErrorHeader() {
