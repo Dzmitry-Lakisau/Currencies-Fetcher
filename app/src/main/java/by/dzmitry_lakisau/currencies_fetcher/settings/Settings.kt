@@ -106,9 +106,9 @@ class Settings(private val sharedPreferences: SharedPreferences) {
     fun get(): List<CurrencySetting> {
         val sortedCurrencySettings = ArrayList<CurrencySetting>()
         selectedCurrencies.forEach { selection ->
-                sortedCurrencySettings.add(
-                    availableCurrencies.find { it.charCode == selection.key}!!
-                )
+            val currencySetting = availableCurrencies.find { it.charCode == selection.key}!!
+            currencySetting.selected = selection.value
+            sortedCurrencySettings.add(currencySetting)
         }
         return sortedCurrencySettings
     }
