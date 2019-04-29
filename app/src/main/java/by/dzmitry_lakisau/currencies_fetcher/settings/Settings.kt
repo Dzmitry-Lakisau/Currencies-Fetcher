@@ -70,7 +70,7 @@ class Settings(private val sharedPreferences: SharedPreferences) {
     private fun updateAvailableCurrencies(unorderedCurrencies: List<CurrencyTwoDateRate>){
         availableCurrencies.clear()
         unorderedCurrencies.forEach {
-            availableCurrencies.add(CurrencySetting(it.charCode!!, it.scale!!, it.name!!, selectedCurrencies[it.charCode!!] ?: false))
+            availableCurrencies.add(CurrencySetting(it.charCode, it.scale, it.name, selectedCurrencies[it.charCode] ?: false))
         }
     }
 

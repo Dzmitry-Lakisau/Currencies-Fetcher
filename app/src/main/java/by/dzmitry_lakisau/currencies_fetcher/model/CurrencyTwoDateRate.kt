@@ -3,23 +3,23 @@ package by.dzmitry_lakisau.currencies_fetcher.model
 import java.math.BigDecimal
 import java.util.*
 
-class CurrencyTwoDateRate {
+data class CurrencyTwoDateRate(
 
-    var charCode: String? = null
+    val id: Int,
 
-    var scale: Int? = null
+    val numCode: String,
 
-    var id: Int? = null
+    val charCode: String,
 
-    var numCode: String? = null
+    val scale: Int,
 
-    var name: String? = null
+    val name: String,
 
-    var latterDateRate: BigDecimal? = null
+    val latterDateRate: BigDecimal,
 
-    var earlierDateRate: BigDecimal? = null
+    val earlierDateRate: BigDecimal,
 
-    var latterDate: Date? = null
+    val latterDate: Date,
 
-    var earlierDate: Date? = null
-}
+    val earlierDate: Date
+)

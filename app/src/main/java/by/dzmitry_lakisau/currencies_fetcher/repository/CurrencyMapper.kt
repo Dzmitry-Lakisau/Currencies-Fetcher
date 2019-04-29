@@ -21,18 +21,9 @@ class CurrencyMapper {
         val earlierRatesList = dailyExchangeRatesList[1]
 
         latterRatesList.currencies.forEachIndexed { index, element ->
-            val currencyTwoDayRate = CurrencyTwoDateRate()
-            currencyTwoDayRate.apply {
-                scale = element.scale
-                charCode = element.charCode
-                id = element.id
-                numCode = element.numCode
-                name = element.name
-                latterDateRate = element.rate
-                earlierDateRate = earlierRatesList.currencies[index].rate
-                latterDate = latterRatesList.date
-                earlierDate = earlierRatesList.date
-            }
+            val currencyTwoDayRate = CurrencyTwoDateRate(element.id, element.numCode, element.charCode, element.scale,
+                element.name, element.rate, earlierRatesList.currencies[index].rate, latterRatesList.date, earlierRatesList.date)
+
             currencyTwoDayRateList.add(currencyTwoDayRate)
         }
 
