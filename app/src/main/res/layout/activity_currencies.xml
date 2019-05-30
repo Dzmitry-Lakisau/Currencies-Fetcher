@@ -46,7 +46,7 @@
                     style="@style/Widget.AppCompat.Light.ActionButton"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:visibility="@{currenciesViewModel.isError ? View.INVISIBLE : View.VISIBLE}"
+                    android:visibility="@{currenciesViewModel.isSuccess ? View.VISIBLE : View.INVISIBLE}"
                     app:layout_constraintStart_toEndOf="@id/toolbar_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:srcCompat="@drawable/ic_settings" />
