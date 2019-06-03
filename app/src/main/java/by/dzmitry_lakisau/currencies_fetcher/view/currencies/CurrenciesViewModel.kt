@@ -10,7 +10,6 @@ import by.dzmitry_lakisau.currencies_fetcher.repository.Repository
 import by.dzmitry_lakisau.currencies_fetcher.settings.Settings
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,7 +41,6 @@ class CurrenciesViewModel(private val repository: Repository, val settings: Sett
 
         compositeDisposable.add(
             repository.getExchangeRates()
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {

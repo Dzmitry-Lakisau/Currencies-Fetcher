@@ -29,7 +29,6 @@ val appModule = module {
         Retrofit.Builder()
             .baseUrl(BuildConfig.API_BASE_URL)
             .client(get())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(SimpleXmlConverterFactory.create())
             .build()
             .create(CurrenciesApi::class.java)
