@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MotionEventCompat
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.dzmitry_lakisau.currencies_fetcher.R
 import by.dzmitry_lakisau.currencies_fetcher.settings.CurrencySetting
@@ -14,11 +15,13 @@ import kotlinx.android.synthetic.main.item_currency_setting.view.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class SettingsAdapter(val onStartDragListener: OnStartDragListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SettingsAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val ITEM = 0
     }
+
+    val dragHelper = DragHelper()
 
     val currencySettings = ArrayList<CurrencySetting>()
 
@@ -44,7 +47,7 @@ class SettingsAdapter(val onStartDragListener: OnStartDragListener): RecyclerVie
         notifyItemMoved(sourcePosition, targetPosition)
     }
 
-    inner class CurrencySettingViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    private inner class CurrencySettingViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         init {
             itemView.switch_show.setOnCheckedChangeListener{ _, isChecked ->
@@ -52,7 +55,7 @@ class SettingsAdapter(val onStartDragListener: OnStartDragListener): RecyclerVie
             }
             
             itemView.imv_reorder.setOnTouchListener { _, event ->
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) { onStartDragListener.onStartDrag(this) }
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) { dragHelper.startDrag(this) }
                 false
             }
         }
@@ -65,4 +68,13 @@ class SettingsAdapter(val onStartDragListener: OnStartDragListener): RecyclerVie
             }
         }
     }
+
+    inner class DragHelper: ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(UP or DOWN, 0){
+        override fun onMove(recyclerView: RecyclerView, source: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+            onItemMove(source.adapterPosition, target.adapterPosition)
+            return true
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+    })
 }
